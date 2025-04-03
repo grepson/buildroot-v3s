@@ -1,0 +1,4 @@
+name: V3S_PATCHES
+desc: Patches for Allwinner V3S on Sipeed LicheePi Zero
+version: 1.0
+url: https://github.com/grepson/buildroot-v3s.git

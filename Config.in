@@ -1,0 +1,5 @@
+config BR2_LICHEEPI_ZERO_V3S_PATCHES
+	bool "Apply V3s patches"
+	default y
+	help
+		This option applies patches to fix Solaris-style flags and libcedarc for V3s.

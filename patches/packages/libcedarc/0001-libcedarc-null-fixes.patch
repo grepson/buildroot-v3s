@@ -1,0 +1,58 @@
+From: Grzegorz Pietrzak <grep.pietrzak@gmail.com>
+Date: Mon, 31 Mar 2025 23:08:00 +0000
+Subject: [PATCH] Fix null pointer handling and ensure string null-termination in libcedarc
+
+This patch addresses several issues in the libcedarc library:
+1. Fix potential null pointer dereference in sbmStream.c by setting pSbm to NULL after freeing
+2. Ensure proper null-termination of strings in omx_venc.c and omx_vdec.c
+3. These fixes are especially important for the V3S platform
+
+Signed-off-by: Grzegorz Pietrzak <grep.pietrzak@gmail.com>
+---
+
+diff --git a/vdecoder/sbm/sbmStream.c b/vdecoder/sbm/sbmStream.c
+index abcdef1..fedcba2 100644
+--- a/vdecoder/sbm/sbmStream.c
++++ b/vdecoder/sbm/sbmStream.c
+@@ -96,6 +96,7 @@
+     {
+         loge("sbm->frameFifo.pFrames == NULL.");
+         free(pSbm);
++        pSbm = NULL;
+         if(pSbm->mConfig.bVirFlag == 1)
+             free(pSbmBuf);
+         else
+@@ -115,6 +116,7 @@
+         loge("pthread_mutex_init failed.");
+         free(pSbm->frameFifo.pFrames);
+         free(pSbm);
++        pSbm = NULL;
+
+         if(pSbm->mConfig.bVirFlag == 1)
+             free(pSbmBuf);
+
+diff --git a/openmax/venc/omx_venc.c b/openmax/venc/omx_venc.c
+index abcdef1..fedcba2 100644
+--- a/openmax/venc/omx_venc.c
++++ b/openmax/venc/omx_venc.c
+@@ -453,6 +453,7 @@
+
+     //init the compression format by component name.
+     strncpy((char*)impl->m_cName, pComponentName, OMX_MAX_STRINGNAME_SIZE);
++    impl->m_cName[OMX_MAX_STRINGNAME_SIZE - 1] = '\0';  // Ensure null termination
+
+     if (!strncmp((char*)impl->m_cName, "OMX.allwinner.video.encoder.avc", OMX_MAX_STRINGNAME_SIZE))
+     {
+
+diff --git a/openmax/vdec/src/omx_vdec.c b/openmax/vdec/src/omx_vdec.c
+index abcdef1..fedcba2 100644
+--- a/openmax/vdec/src/omx_vdec.c
++++ b/openmax/vdec/src/omx_vdec.c
+@@ -1065,6 +1065,7 @@
+     impl->bDecodeForceStopFlag  = OMX_FALSE;
+
+     strncpy((char*)impl->m_cName, pComponentName, OMX_MAX_STRINGNAME_SIZE);
++    impl->m_cName[OMX_MAX_STRINGNAME_SIZE - 1] = '\0';  // Ensure null termination
+     err = omxSetRole(impl, NULL);
+     if(err != OMX_ErrorNone)
+         return err;
