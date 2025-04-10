@@ -37,6 +37,16 @@ BR2_PACKAGE_HOST_UBOOT_TOOLS=y
 BR2_PACKAGE_HOST_UBOOT_TOOLS_BOOT_SCRIPT=y
 BR2_PACKAGE_HOST_UBOOT_TOOLS_BOOT_SCRIPT_SOURCE="board/sipeed/licheepi_zero/boot.cmd"
 
+BR2_LICHEEPI_ZERO_V3S_PATCHES=y
+
+# Ethernet support / proper device tree from sunxi
+BR2_LICHEEPI_ZERO_ETHERNET=y
+BR2_LINUX_KERNEL_CUSTOM_DTS_PATH="$(BR2_EXTERNAL_V3S_PATCHES_PATH)/board/sipeed/licheepi_zero/dts/sun8i-v3s.dtsi $(BR2_EXTERNAL_V3S_PATCHES_PATH)/board/sipeed/licheepi_zero/dts/sun8i-v3s-licheepi-zero.dts $(BR2_EXTERNAL_V3S_PATCHES_PATH)/board/sipeed/licheepi_zero/dts/sun8i-v3s-licheepi-zero-dock.dts"
+BR2_LINUX_KERNEL_CONFIG_FRAGMENT_FILES="$(BR2_EXTERNAL_V3S_PATCHES_PATH)/board/sipeed/licheepi_zero/linux-ethernet.config"
+BR2_SYSTEM_DHCP="eth0"
+BR2_PACKAGE_DHCPCD=y
+BR2_PACKAGE_ETHTOOL=y
+BR2_PACKAGE_IPROUTE2=y' >> $(BR2_EXTERNAL_V3S_PATCHES_PATH)/configs/licheepi_zero_v3s_defconfig
 
 # GCC Options (13 isn't working correctly)
 BR2_GCC_VERSION_12_X=y
@@ -45,3 +55,6 @@ BR2_GCC_VERSION="12.4.0"
 # Patches libraries
 BR2_GLOBAL_PATCH_DIR="$(BR2_EXTERNAL_V3S_PATCHES_PATH)/patches/packages"
 BR2_LINUX_KERNEL_PATCH="$(BR2_EXTERNAL_V3S_PATCHES_PATH)/patches/linux"
+
+# Rootfs size fix
+BR2_TARGET_ROOTFS_EXT2_SIZE="80M"
